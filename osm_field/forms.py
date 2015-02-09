@@ -27,7 +27,7 @@ def _get_js(debug=False):
     if debug:
         base.extend(['js/osm_field.js'])
     else:
-        base.extend(['js/osm_field.min.js'])
+        base.extend(['js/osm_field.js'])
     return base
 
 
@@ -36,7 +36,7 @@ def _get_css(debug=False):
     if debug:
         base.extend(['css/osm_field.css'])
     else:
-        base.extend(['css/osm_field.min.css'])
+        base.extend(['css/osm_field.css'])
     return base
 
 
@@ -73,6 +73,8 @@ class OSMWidget(TextInput):
         return ret
 
     def render_osmfield(self, id_):
-        # we need {{ and }} because of .format() working with {}
-        return format_html('<script type="application/javascript">$(function()'
-                           '{{$("#{0}").osmfield();}});</script>', id_)
+        if getattr(settings, 'OSMFIELD_NO_POPUP', False):
+            return format_html(
+                '<div class="osmfield-embedded-map" id="{0}-map"></div>', id_)
+        else:
+            return ''
