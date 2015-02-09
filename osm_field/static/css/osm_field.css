@@ -1,5 +1,6 @@
 div.osmfield-wrapper {
-	position:relative;
+	position: relative;
+	display: inline;
 }
 
 div.osmfield-map {
@@ -12,3 +13,8 @@ div.osmfield-map {
 	z-index: 1000;
 }
 
+div.osmfield-embedded-map {
+	width: 350px;
+	height: 250px;
+	border: 1px solid black;
+}

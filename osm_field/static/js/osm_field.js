@@ -1,31 +1,44 @@
-// jQuery OSM field
-// 2014 by Thomas netAction Schmidt for Sinnwerkstatt
-// https://www.sinnwerkstatt.com/
-// MIT License
-
+/* jQuery OSM field
+	2014 by Thomas netAction Schmidt for Sinnwerkstatt
+	https://www.sinnwerkstatt.com/
+	MIT License */
 (function($) {
 	$.fn.osmfield = function() {
 
 		return this.each(function() {
 			// Create HTML elements for osmfield
 			var idAttribute = $(this).attr('id');
+			var idLatElement = $(this).data('lat-field');
+ 			var idLonElement = $(this).data('lon-field');
+
+			if (idLatElement === undefined) {
+				idLatElement = '#' + idAttribute + '_lat';
+			} else {
+				idLatElement = '#id_' + idLatElement;
+			}
+
+			if (idLonElement === undefined) {
+				idLonElement = '#' + idAttribute + '_lon';
+			} else {
+				idLonElement = '#id_' + idLonElement;
+			}
+
 			$(this).addClass('osmfield-input');
 
 			// Create map container when not existent.
 			// Wrapper is only for CSS.
 			if (!$('#'+idAttribute+'-map').length)
-				$(this).before('<div class="osmfield-wrapper"><div id="'+idAttribute+'-map"></div></div>');
+				$(this).before('<div class="osmfield-wrapper"><div id="'+idAttribute+'-map" class="osmfield-map"></div></div>');
 
-			$(this).data('lat-element',$('#'+idAttribute+'_lat'));
-			$(this).data('lng-element',$('#'+idAttribute+'_lon'));
-			$(this).data('map-element',$('#'+idAttribute+'-map'));
-			$(this).data('map-element').addClass('osmfield-map');
+			$(this).data('lat-element',$(idLatElement));
+			$(this).data('lng-element',$(idLonElement));
+			$(this).data('map-element',$('#' + idAttribute+'-map'));
 
 			var osmfieldElement = $(this);
 
 			// initialize Leaflet map, tile layer and marker
 			var map = L.map(osmfieldElement.data('map-element')[0]).setView([0,0], 15);
-			L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
+			L.tileLayer('https://otile1-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
 				attribution:
 					'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,'+
 					' <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,'+
@@ -184,3 +197,7 @@
 		}); // each osmfield element
 	}; // jQuery plugin end
 }(jQuery));
+
+$(function() {
+	$('input.osmfield').osmfield();
+});
