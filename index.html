@@ -43,9 +43,9 @@
 
 	<h3>The jQuery plugin</h3>
 
-	<p>This page describes the jQuery part of the Django osm field plugin. You can use this stand alone in your own projects if you pick the files you need from the static folder. Everything else in the repository is the Django project. You also find it <a href="https://pypi.python.org/pypi/django-osm-field">on python.org</a>.
+	<p>This page describes the jQuery part of the Django osm field plugin. You can use this stand alone in your own projects if you just pick the <a href="osm_field/static/js/osm_field.js">osm_field.js</a> plugin file. Everything else in the repository is the Django project. You might also find it <a href="https://pypi.python.org/pypi/django-osm-field">on python.org</a>.
 
-	<p>The jQuery osmfield plugin is a geolocation picker that turns any INPUT element into a position locator. Type in the address. If the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">OpenStreetMap Nominatim API</a> finds matching coordinates, a map will be shown. You can correct the location here now or type another address. Finally, the Address and coordinates will be saved in the original INPUT element. The dependencies are <a href="http://leafletjs.com/">Leaflet</a> and <a href="http://jquery.com/">jQuery</a>.</p>
+	<p>The jQuery osmfield plugin is a geolocation picker that turns three INPUT elements into a position locator. Type in the address. If the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">OpenStreetMap Nominatim API</a> finds matching coordinates, a map will be shown. You can specify details in the INPUT now and correct the location in the map. Finally, the Address and coordinates will be saved in the original INPUT elements. The dependencies are <a href="http://leafletjs.com/">Leaflet</a> and <a href="http://jquery.com/">jQuery</a>.</p>
 
 	<h3>Simple osmfield</h3>
 	<p>Let's start with jQuery, Leaflet, the Plugin and some lines CSS…</p>
@@ -73,7 +73,7 @@
 		<input type="hidden" id="example1_lon" />
 	</p>
 
-	<p>The address' INPUT element must have an ID. This with appended “_lat” and “_lon” are the IDs of (usually hidden) latitude and longitude INPUTs. The map container will be prepended to the address INPUT. If there already is a DIV with ID “example1_lat”, it will be used. This way you can place the map whereever you like.</p>
+	<p>The address' INPUT element must have an ID. The same ID with appended “_lat” and “_lon” are the IDs of (usually hidden) latitude and longitude INPUTs.</p>
 
 	<h3>osmfield with address</h3>
 	<p>Set a default address.</p>
@@ -152,7 +152,7 @@ $(function() {
 
 &lt;pre id=&quot;values&quot;&gt;&lt;/pre&gt;</code></pre>
 
-	<p>You can read the address and geo coordinates whenever you want. If an <em>INPUT.osmfield-address</em> is set as shown in most of the examples above, its <em>name</em> attribute will be used for lat and lon INPUT elements with appended “_lat“. If there is no <em>INPUT.osmfield-address</em> or it does not have any <em>name</em> attribute, “osmfield_lat“ and “osmfield_lon“ will be used. All this even works without user interaction simply after initailzation. Click the button.</p>
+	<p>You can read the address and geo coordinates whenever you want. This even works without user interaction simply after initailzation. Click the buttons.</p>
 
 	<form action="." method="get">
 		<p>
@@ -169,15 +169,6 @@ $(function() {
 	<pre id="values"></pre>
 
 
-
-	<h3>No Popup</h3>
-	<pre><code>&lt;input class=&quot;osmfield&quot; id=&quot;example7&quot; value=&quot;Jeber-Bergfrieden&quot; /&gt;
-&lt;div class=&quot;osmfield-embedded-map&quot; id=&quot;example7-map&quot;&gt;&lt;/div&gt;
-&lt;input id=&quot;example7_lat&quot; type=&quot;hidden&quot; /&gt;
-&lt;input id=&quot;example7_lon&quot; type=&quot;hidden&quot; /&gt;</code></pre>
-	<p>If you don't want your map to pop over the page, simply embed it like any other element. The CSS is up to you.</p>
-
-
 	<script type="application/javascript">
 		$(function() {
 			$('button#getvalues').click(function() {
@@ -190,13 +181,6 @@ $(function() {
 		});
 	</script>
 
-
-	<input class="osmfield" id="example7" value="Jeber-Bergfrieden" />
-	<div class="osmfield-embedded-map" id="example7-map"></div>
-	<input id="example7_lat" type="hidden" />
-	<input id="example7_lon" type="hidden" />
-
-	<p>This text is always visible as the map scrolls everything down.</p>
 </body>
 
 </html>

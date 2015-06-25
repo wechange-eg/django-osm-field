@@ -8,27 +8,16 @@
 		return this.each(function() {
 			// Create HTML elements for osmfield
 			var idAttribute = $(this).attr('id');
-			var idLatElement = $(this).data('lat-field');
- 			var idLonElement = $(this).data('lon-field');
-
-			if (idLatElement === undefined) {
-				idLatElement = '#' + idAttribute + '_lat';
-			} else {
-				idLatElement = '#id_' + idLatElement;
-			}
-
-			if (idLonElement === undefined) {
-				idLonElement = '#' + idAttribute + '_lon';
-			} else {
-				idLonElement = '#id_' + idLonElement;
-			}
+			var idLatElement = '#' + idAttribute + '_lat';
+			var idLonElement = '#' + idAttribute + '_lon';
 
 			$(this).addClass('osmfield-input');
 
-			// Create map container when not existent.
-			// Wrapper is only for CSS.
-			if (!$('#'+idAttribute+'-map').length)
-				$(this).before('<div class="osmfield-wrapper"><div id="'+idAttribute+'-map" class="osmfield-map"></div></div>');
+			// Create wrapping container
+			$(this).wrap('<div class="osmfield-wrapper"></div>');
+			$(this).after(' <button class="osmfield-sync">🚩</button>'+
+				'<div id="'+idAttribute+'-map" class="osmfield-map"></div>');
+			$(this).parent().children('button').hide();
 
 			$(this).data('lat-element',$(idLatElement));
 			$(this).data('lng-element',$(idLonElement));
@@ -38,6 +27,7 @@
 
 			// initialize Leaflet map, tile layer and marker
 			var map = L.map(osmfieldElement.data('map-element')[0]).setView([0,0], 15);
+			map.scrollWheelZoom.disable();
 			L.tileLayer('https://otile1-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
 				attribution:
 					'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,'+
@@ -47,6 +37,13 @@
 			}).addTo(map);
 			var marker = L.marker([0,0],{draggable:true}).addTo(map);
 
+
+			osmfieldElement.parent().find('.osmfield-sync').click(function() {
+				$(this).hide();
+				osmfieldElement.trigger('change');
+				// Do not submit any form
+				return false;
+			});
 
 
 			// bubble up the dom to find out language or use 'en' as default
@@ -64,22 +61,10 @@
 					var position = event.target.getLatLng();
 					map.panTo(position);
 
-					var zoom = map.getZoom();
-					var language = osmfieldElement.data('language');
-					var url =
-						'https://nominatim.openstreetmap.org/reverse?json_callback=?';
 					osmfieldElement.data('lat-element').val(position.lat);
 					osmfieldElement.data('lng-element').val(position.lng);
-					$.getJSON(url,{
-							format: 'json',
-							lat: position.lat,
-							lon: position.lng,
-							zoom: zoom,
-							addressdetails: 0,
-							'accept-language': language
-						}, function(data) {
-						osmfieldElement.val(data.display_name);
-					});
+
+					osmfieldElement.parent().find('.osmfield-sync').show();
 				});
 			})(osmfieldElement);
 
@@ -87,6 +72,10 @@
 			// User enters something in INPUT field
 			osmfieldElement
 				.on('propertychange keyup input paste change', function() {
+
+				// Do nothing if sync-button is visible, because then the marker has moved.
+				if (osmfieldElement.parent().find('.osmfield-sync').is(':visible')) return;
+
 				if ($(this).data('oldvalue')==$(this).val()) return;
 				$(this).data('oldvalue',$(this).val());
 
@@ -114,23 +103,16 @@
 								var newLatLng = new L.LatLng(lat, lng);
 								marker.setLatLng(newLatLng);
 								map.panTo(newLatLng);
-							} else {
-								osmfieldElement.data('map-element').slideUp();
-								osmfieldElement.data('lat-element').val('');
-								osmfieldElement.data('lng-element').val('');
 							}
 
-							// Show map when INPUT has focus and coordinates are known
+							// Show map when all coordinates are set
 							if (
-								osmfieldElement.is(":focus") &&
 								osmfieldElement.data('lat-element').val() &&
 								osmfieldElement.data('lng-element').val()
 							 ) {
 								osmfieldElement.data('map-element').slideDown(function() {
 									window.dispatchEvent(new Event('resize'));
 								});
-							} else {
-								osmfieldElement.data('map-element').slideUp();
 							}
 
 						});
@@ -157,42 +139,15 @@
 				);
 				marker.setLatLng(newLatLng);
 				map.panTo(newLatLng);
+
+				osmfieldElement.data('map-element').slideDown(function() {
+					window.dispatchEvent(new Event('resize'));
+				});
 			} else {
 				// Maybe OpenStreetMap has coordinates or hide the map
 				osmfieldElement.trigger('change');
 			}
 
-
-			// Hide map when clicking outside
-			$(document).click(function(event) {
-				// A child of INPUT or map was clicked
-				var thisosmfield = $(event.target).closest('.osmfield-input, .osmfield-map');
-				if(thisosmfield.length) {
-					// hide all maps except of this
-					if (thisosmfield.hasClass('osmfield-input')) {
-						thisosmfield = thisosmfield.data('map-element');
-					}
-					$('.osmfield-map').not(thisosmfield).slideUp();
-				} else {
-					// hide all
-					$('.osmfield-map').slideUp();
-				}
-			});
-
-
-			// Show map when INPUT gets focus and position is known
-			(function (osmfieldElement) {
-				osmfieldElement.focus(function() {
-					if (
-						osmfieldElement.data('lat-element').val() &&
-						osmfieldElement.data('lng-element').val()
-					) {
-						osmfieldElement.data('map-element').slideDown(function() {
-							window.dispatchEvent(new Event('resize'));
-						});
-					}
-				});
-			})(osmfieldElement);
 
 		}); // each osmfield element
 	}; // jQuery plugin end
