@@ -39,6 +39,7 @@
 
 
 			osmfieldElement.parent().find('.osmfield-sync').click(function() {
+				osmfieldElement.data('marker-dragged', false);
 				$(this).hide();
 				osmfieldElement.trigger('change');
 				// Do not submit any form
@@ -54,6 +55,15 @@
 			} else lang = 'en';
 			osmfieldElement.data('language',lang);
 
+			// Put description text on button instead of flag icon
+			(function() {
+				var text;
+				switch (osmfieldElement.data('language')) {
+					case 'en': text = 'apply address into map'; break;
+					case 'de': text = 'Adresse in Karte übernehmen'; break;
+				}
+				if (text) osmfieldElement.parent().find('.osmfield-sync').text( text );
+			})();
 
 			// magic that happens when marker in map is dragged
 			(function (osmfieldElement) {
@@ -64,7 +74,7 @@
 					osmfieldElement.data('lat-element').val(position.lat);
 					osmfieldElement.data('lng-element').val(position.lng);
 
-					osmfieldElement.parent().find('.osmfield-sync').show();
+					osmfieldElement.data('marker-dragged', true);
 				});
 			})(osmfieldElement);
 
@@ -72,6 +82,9 @@
 			// User enters something in INPUT field
 			osmfieldElement
 				.on('propertychange keyup input paste change', function() {
+				if (osmfieldElement.data('marker-dragged')) {
+					osmfieldElement.parent().find('.osmfield-sync').show();
+				}
 
 				// Do nothing if sync-button is visible, because then the marker has moved.
 				if (osmfieldElement.parent().find('.osmfield-sync').is(':visible')) return;
