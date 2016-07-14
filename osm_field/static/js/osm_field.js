@@ -28,11 +28,14 @@
 			// initialize Leaflet map, tile layer and marker
 			var map = L.map(osmfieldElement.data('map-element')[0]).setView([0,0], 15);
 			map.scrollWheelZoom.disable();
-			L.tileLayer('https://otile1-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
+			
+			var tile_url = (window.location.protocol === 'http:') ?
+	                'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png' :
+                    'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png';
+			
+			L.tileLayer(tile_url, {
 				attribution:
-					'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,'+
-					' <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,'+
-					' Imagery © <a href="http://www.mapquest.com/">Mapquest</a>',
+					'CartoDB | Open Streetmap',
 				maxZoom: 18
 			}).addTo(map);
 			var marker = L.marker([0,0],{draggable:true}).addTo(map);
