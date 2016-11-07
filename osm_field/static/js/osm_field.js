@@ -16,6 +16,7 @@
 			// Create wrapping container
 			$(this).wrap('<div class="osmfield-wrapper"></div>');
 			$(this).after(' <button class="osmfield-sync">🚩</button>'+
+			    ' <button class="osmfield-clear">X</button>'+
 				'<div id="'+idAttribute+'-map" class="osmfield-map"></div>');
 			$(this).parent().children('button').hide();
 
@@ -42,14 +43,24 @@
 
 
 			osmfieldElement.parent().find('.osmfield-sync').click(function() {
-				osmfieldElement.data('marker-dragged', false);
-				$(this).hide();
-				osmfieldElement.trigger('change');
-				// Do not submit any form
-				return false;
-			});
-
-
+                osmfieldElement.data('marker-dragged', false);
+                $(this).hide();
+                osmfieldElement.trigger('change');
+                // Do not submit any form
+                return false;
+            });
+			
+			osmfieldElement.parent().find('.osmfield-clear').click(function() {
+			    osmfieldElement.parent().find('input').val('');
+			    osmfieldElement.data('lat-element').val('');
+			    osmfieldElement.data('lng-element').val('');
+			    
+                $(this).hide();
+                osmfieldElement.data('map-element').slideUp();
+                // Do not submit any form
+                return false;
+            });
+			
 			// bubble up the dom to find out language or use 'en' as default
 			var lang = osmfieldElement.closest('[lang]').attr('lang');
 			if (lang) {
@@ -66,6 +77,13 @@
 					case 'de': text = 'Adresse in Karte übernehmen'; break;
 				}
 				if (text) osmfieldElement.parent().find('.osmfield-sync').text( text );
+				text = null;
+				switch (osmfieldElement.data('language')) {
+                    case 'en': text = 'Clear'; break;
+                    case 'de': text = 'Löschen'; break;
+                }
+                if (text) osmfieldElement.parent().find('.osmfield-clear').text( text );
+                osmfieldElement.parent().find('.osmfield-clear').hide();
 			})();
 
 			// magic that happens when marker in map is dragged
@@ -85,6 +103,7 @@
 			// User enters something in INPUT field
 			osmfieldElement
 				.on('propertychange keyup input paste change', function() {
+				    
 				if (osmfieldElement.data('marker-dragged')) {
 					osmfieldElement.parent().find('.osmfield-sync').show();
 				}
@@ -94,6 +113,11 @@
 
 				if ($(this).data('oldvalue')==$(this).val()) return;
 				$(this).data('oldvalue',$(this).val());
+				
+				// if any value is set, show delete button
+				if ($(this).val() || osmfieldElement.data('lat-element').val() || osmfieldElement.data('lng-element').val()) {
+	                osmfieldElement.parent().find('.osmfield-clear').show();
+				}
 
 				function search(nameInputElement) {
 					var language = nameInputElement.data('language');
@@ -159,6 +183,7 @@
 				osmfieldElement.data('map-element').slideDown(function() {
 					window.dispatchEvent(new Event('resize'));
 				});
+				osmfieldElement.parent().find('.osmfield-clear').show();
 			} else {
 				// Maybe OpenStreetMap has coordinates or hide the map
 				osmfieldElement.trigger('change');

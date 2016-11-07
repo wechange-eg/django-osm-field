@@ -74,6 +74,8 @@ class LatitudeField(six.with_metaclass(models.SubfieldBase, FloatField)):
     The ``validators`` parameter will be appended with
     :func:`~validate_latitude` if not already present.
     """
+    
+    empty_strings_allowed = True
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('validators', [])
@@ -102,7 +104,9 @@ class LongitudeField(six.with_metaclass(models.SubfieldBase, FloatField)):
     The ``validators`` parameter will be appended with
     :func:`~validate_longitude` if not already present.
     """
-
+    
+    empty_strings_allowed = True
+    
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('validators', [])
         if validate_longitude not in kwargs['validators']:
