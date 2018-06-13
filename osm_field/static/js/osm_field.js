@@ -16,7 +16,8 @@
 			// Create wrapping container
 			$(this).wrap('<div class="osmfield-wrapper"></div>');
 			$(this).after(' <button class="osmfield-sync">🚩</button>'+
-			    ' <button class="osmfield-clear">X</button>'+
+		        ' <button class="osmfield-clear">X</button>'+
+		        ' <div class="osmfield-error-msg">Error!</div>'+
 				'<div id="'+idAttribute+'-map" class="osmfield-map"></div>');
 			$(this).parent().children('button').hide();
 
@@ -73,17 +74,24 @@
 			(function() {
 				var text;
 				switch (osmfieldElement.data('language')) {
-					case 'en': text = 'apply address into map'; break;
-					case 'de': text = 'Adresse in Karte übernehmen'; break;
+					case 'en': text = 'Search again for this address'; break;
+					case 'de': text = 'Diese Adresse auf der Karte suchen'; break;
 				}
 				if (text) osmfieldElement.parent().find('.osmfield-sync').text( text );
 				text = null;
-				switch (osmfieldElement.data('language')) {
+                switch (osmfieldElement.data('language')) {
                     case 'en': text = 'Clear'; break;
                     case 'de': text = 'Löschen'; break;
                 }
                 if (text) osmfieldElement.parent().find('.osmfield-clear').text( text );
+                text = null;
+                switch (osmfieldElement.data('language')) {
+                    case 'en': text = 'We could not find a location for this address!'; break;
+                    case 'de': text = 'Für diese Adresse konnte kein Ort gefunden werden!'; break;
+                }
+                if (text) osmfieldElement.parent().find('.osmfield-error-msg').text( text );
                 osmfieldElement.parent().find('.osmfield-clear').hide();
+                osmfieldElement.parent().find('.osmfield-error-msg').hide();
 			})();
 
 			// magic that happens when marker in map is dragged
@@ -132,6 +140,8 @@
 								'accept-language': language
 							},function(data) {
 							// coordinates found for this address?
+							    console.log('asdas')
+							    console.log(data.length)
 							if (data.length) {
 								var lat = data[0].lat;
 								var lng = data[0].lon;
@@ -143,17 +153,19 @@
 								var newLatLng = new L.LatLng(lat, lng);
 								marker.setLatLng(newLatLng);
 								map.panTo(newLatLng);
-							}
-
-							// Show map when all coordinates are set
-							if (
-								osmfieldElement.data('lat-element').val() &&
-								osmfieldElement.data('lng-element').val()
-							 ) {
-								osmfieldElement.data('map-element').slideDown(function() {
-									window.dispatchEvent(new Event('resize'));
-								});
-							}
+								
+								// Show map when all coordinates are set
+								if (osmfieldElement.data('lat-element').val() && osmfieldElement.data('lng-element').val()) {
+								    osmfieldElement.data('map-element').slideDown(function() {
+								        window.dispatchEvent(new Event('resize'));
+								    });
+								    osmfieldElement.parent().find('.osmfield-error-msg').hide();
+								}
+							} else {
+                                if (nameInputElement.val()) {
+                                    osmfieldElement.parent().find('.osmfield-error-msg').show();
+                                }
+                            }
 
 						});
 					})(nameInputElement);

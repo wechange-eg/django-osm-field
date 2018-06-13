@@ -3,3 +3,8 @@
 	height: 250px;
 	border: 1px solid black;
 }
+
+.osmfield-error-msg {
+    color: #d00800;
+    padding: 5px;
+}
