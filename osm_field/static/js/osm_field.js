@@ -30,6 +30,7 @@
 			// initialize Leaflet map, tile layer and marker
 			var map = L.map(osmfieldElement.data('map-element')[0]).setView([0,0], 15);
 			map.scrollWheelZoom.disable();
+			osmfieldElement.data('map', map);
 			
 			var tile_url = (window.location.protocol === 'http:') ?
 	                'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png' :
@@ -41,7 +42,7 @@
 				maxZoom: 18
 			}).addTo(map);
 			var marker = L.marker([0,0],{draggable:true}).addTo(map);
-
+			osmfieldElement.data('marker', marker);
 
 			osmfieldElement.parent().find('.osmfield-sync').click(function() {
                 osmfieldElement.data('marker-dragged', false);
@@ -140,8 +141,6 @@
 								'accept-language': language
 							},function(data) {
 							// coordinates found for this address?
-							    console.log('asdas')
-							    console.log(data.length)
 							if (data.length) {
 								var lat = data[0].lat;
 								var lng = data[0].lon;
