@@ -66,7 +66,7 @@ class OSMWidget(TextInput):
             attrs['class'] = 'osmfield'
         super(OSMWidget, self).__init__(attrs=attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         ret = super(OSMWidget, self).render(name, value, attrs=attrs)
         id_ = attrs['id']
         ret += self.render_osmfield(id_)
