@@ -2,6 +2,7 @@
 
 import copy
 
+from six import assertRaisesRegex
 from unittest import skipIf
 
 import django
@@ -11,7 +12,6 @@ except ImportError:
     pass
 from django.db import models
 from django.test import SimpleTestCase, TestCase
-from django.utils.six import assertRaisesRegex
 
 from osm_field.fields import LatitudeField, Location, LongitudeField, OSMField
 from osm_field.forms import OSMWidget

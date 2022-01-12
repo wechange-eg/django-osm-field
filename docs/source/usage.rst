@@ -107,7 +107,7 @@ In the end your template should look similar to this:
 
 .. code-block:: django
 
-    {% load static from staticfiles %}<!DOCTYPE HTML>
+    {% load static %}<!DOCTYPE HTML>
     <html>
       <head>
         <title></title>

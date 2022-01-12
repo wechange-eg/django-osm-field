@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from six import assertRaisesRegex
 import unittest
 
 from django.core.exceptions import ValidationError
-from django.utils.six import assertRaisesRegex
+
 
 from osm_field.validators import validate_latitude, validate_longitude
 

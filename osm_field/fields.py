@@ -9,14 +9,15 @@ except ImportError:  # noqa: Django<1.7
     pass
 
 from django.db import models
-from django.db.models.fields import TextField, FloatField, FieldDoesNotExist
-from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.core.exceptions import FieldDoesNotExist
+from django.db.models.fields import TextField, FloatField
+from django.utils.encoding import force_text
 
 from .forms import OSMWidget
 from .validators import validate_latitude, validate_longitude
 
 
-@python_2_unicode_compatible
+@six.python_2_unicode_compatible
 class Location(object):
     """
     A wrapper class bundling the description of a location (``text``) and its
@@ -65,7 +66,7 @@ class Location(object):
         return not (self == other)
 
 
-class LatitudeField(six.with_metaclass(models.SubfieldBase, FloatField)):
+class LatitudeField(FloatField):
     """
     Bases: :class:`django.db.models.FloatField`
 
@@ -95,7 +96,7 @@ class LatitudeField(six.with_metaclass(models.SubfieldBase, FloatField)):
         return super(LatitudeField, self).formfield(**kwargs)
 
 
-class LongitudeField(six.with_metaclass(models.SubfieldBase, FloatField)):
+class LongitudeField(FloatField):
     """
     Bases: :class:`django.db.models.FloatField`
 
@@ -125,7 +126,7 @@ class LongitudeField(six.with_metaclass(models.SubfieldBase, FloatField)):
         return super(LongitudeField, self).formfield(**kwargs)
 
 
-class OSMField(six.with_metaclass(models.SubfieldBase, TextField)):
+class OSMField(TextField):
     """
     Bases: :class:`django.db.models.TextField`
 
