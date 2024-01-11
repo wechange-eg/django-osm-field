@@ -11,7 +11,7 @@ except ImportError:  # noqa: Django<1.7
 from django.db import models
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models.fields import TextField, FloatField
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from .forms import OSMWidget
 from .validators import validate_latitude, validate_longitude
@@ -48,7 +48,7 @@ class Location(object):
 
     def __repr__(self):
         return '<Location lat=%.6f lon=%.6f text=%s>' % (
-            self.lat, self.lon, force_text(self.text)
+            self.lat, self.lon, force_str(self.text)
         )
 
     def __copy__(self):

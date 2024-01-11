@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.urls import patterns, include, path
 
 from django.contrib import admin
 
@@ -6,5 +6,5 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^admin/', include(admin.site.urls)),
+    path('admin/', include(admin.site.urls)),
 )
