@@ -242,9 +242,9 @@ try:
     add_introspection_rules(
         [],
         [
-            "^osm_field\.fields\.LatitudeField",
-            "^osm_field\.fields\.LongitudeField",
-            "^osm_field\.fields\.OSMField",
+            r"^osm_field\.fields\.LatitudeField",
+            r"^osm_field\.fields\.LongitudeField",
+            r"^osm_field\.fields\.OSMField",
         ])
 except ImportError:
     pass
