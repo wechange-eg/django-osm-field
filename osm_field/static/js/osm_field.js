@@ -32,13 +32,16 @@
 			map.scrollWheelZoom.disable();
 			osmfieldElement.data('map', map);
 			
-			var tile_url = (window.location.protocol === 'http:') ?
-	                'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png' :
-                    'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png';
+			// direct tie in with the variables in global context in cosinnus-core
+			var tile_url = (typeof COSINNUS_MAP_TILESET_URL !== 'undefined') ?
+	                COSINNUS_MAP_TILESET_URL :
+                    'https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png';
+			var attribution = (typeof COSINNUS_MAP_TILESET_ATTRIBUTION_HTML !== 'undefined') ?
+					COSINNUS_MAP_TILESET_ATTRIBUTION_HTML :
+					'<a href="https://www.openstreetmap.de" target="_blank">&copy; OpenStreetMap contributors</a>';
 			
 			L.tileLayer(tile_url, {
-				attribution:
-					'CartoDB | Open Streetmap',
+				attribution: attribution,
 				maxZoom: 18
 			}).addTo(map);
 			var marker = L.marker([0,0],{draggable:true}).addTo(map);

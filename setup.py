@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from setuptools import setup
-
+import osm_field
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
@@ -9,12 +9,12 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='django-osm-field',
-    version='0.2.0',
+    version=osm_field.__version__,
     description='Django OpenStreetMap Field',
     long_description=readme + '\n\n' + history,
-    author='Markus Holtermann, et al',
-    author_email='info@markusholtermann.eu',
-    url='https://github.com/MarkusH/django-osm-field',
+    author='Markus Holtermann, Sascha Sommer, et al',
+    author_email='support@wechange.de',
+    url='https://git.wechange.de/gl/code/python-packages/django-osm-field',
     packages=[
         'osm_field',
     ],

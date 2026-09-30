@@ -1,33 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import six
-
 from django.conf import settings
 from django.forms.widgets import Media, TextInput
+from django.templatetags.static import static
+from django.utils.html import format_html, mark_safe
 
-try:
-    from django.utils.html import format_html
-except ImportError:
-    from django.utils.html import conditional_escape, mark_safe
-
-    def format_html(format_string, *args, **kwargs):
-        """
-        Similar to str.format, but passes all arguments through conditional_escape,
-        and calls 'mark_safe' on the result. This function should be used instead
-        of str.format or % interpolation to build up small HTML fragments.
-        """
-        args_safe = map(conditional_escape, args)
-        kwargs_safe = dict((k, conditional_escape(v)) for (k, v) in six.iteritems(kwargs))
-        return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+import osm_field
 
 
 def _get_js(debug=False):
     base = ['js/vendor/leaflet.js']
+    js_path = static('js/osm_field.js')
+    versioned_js = mark_safe(f'<script src="{js_path}?js_v={osm_field.__version__}"></script>')
     if debug:
-        base.extend(['js/osm_field.js'])
+        base.extend([versioned_js])
     else:
-        base.extend(['js/osm_field.js'])
+        base.extend([versioned_js])
     return base
 
 
